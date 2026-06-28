@@ -49,13 +49,20 @@ class StudentApi(APIView):
     
 class TaskViewApi(APIView):
 
-    def get(self,request):
+    def get(self,request,taskId=None):
 
-        allTask=Task.objects.all()
+        if(taskId==None):
 
-        taskData=Task_Serializer(allTask,many=True).data
+            allTask=Task.objects.all()
 
-        return Response(taskData)
+            taskData=Task_Serializer(allTask,many=True).data
+
+            return Response(taskData)
+        
+        else:
+            data=Task.objects.get(id=taskId)
+            taskData=Task_Serializer(data).data
+            return Response(taskData)
 
     def post(self,request):
         new_task=Task_Serializer(data=request.data)
@@ -66,19 +73,9 @@ class TaskViewApi(APIView):
         else:
             return Response(new_task.errors)
         
-class TaskViewById(APIView):
+    def put(self,request,taskId):
 
-    def get(self,request,TaskId):
-
-        allTask=Task.objects.get(id=TaskId)
-
-        taskData=Task_Serializer(allTask).data
-
-        return Response(taskData)
-    
-    def put(self,request,TaskId):
-
-        task=Task.objects.get(id=TaskId)
+        task=Task.objects.get(id=taskId)
 
         taskData=Task_Serializer(task,data=request.data,partial=True)
 
@@ -87,9 +84,9 @@ class TaskViewById(APIView):
 
         return Response("Task data updated")
     
-    def delete(self,request,TaskId):
+    def delete(self,request,taskId):
         
-        task =Task.objects.get(id=TaskId)
+        task =Task.objects.get(id=taskId)
 
         task.delete()
 
