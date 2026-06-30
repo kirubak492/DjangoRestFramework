@@ -1,11 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .models import Students,Task
 from .serializer import Task_Serializer
 
 class StudentApi(APIView):
 
-
+    permission_classes =[IsAuthenticated]
     def post(self,request):
 
         print(request.data)
